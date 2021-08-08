@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.ebookfrenzy.jetpacksample.R
 import kotlinx.android.synthetic.main.main_fragment.*
 
@@ -28,12 +29,13 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        resultText.text = viewModel.getResult().toString()
+        val resultObserver = Observer<Float> { result -> resultText.text = result.toString() }
+
+        viewModel.getResult().observe(viewLifecycleOwner, resultObserver)
 
         convertButton.setOnClickListener {
             if (dollarText.text.isNotEmpty()) {
                 viewModel.setAmount(dollarText.text.toString())
-                resultText.text = viewModel.getResult().toString()
             } else {
                 resultText.text = "No Value"
             }
